@@ -1,0 +1,86 @@
+service: "jes-${env:ENV}"
+
+provider:
+  name:       aws
+  runtime:    nodejs6.10
+  stage:      ${opt:stage}
+  memorySize: 128
+  timeout:    2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+  environment:
+    DYNAMODB_TABLE: "jobEmailSpam-${env:ENV}-${opt:stage}"
+
+package:
+  include:
+    - node_modules/*
+    - src/*.js
+  exclude:
+    - venv
+
+functions:
+  create:
+    handler: src/create.create
+    events:
+      - http:
+          path:   jes/email
+          method: post
+          cors:   yes
+
+  list:
+    handler: src/list.list
+    events:
+      - http:
+          path:   jes/email
+          method: get
+          cors:   yes
+
+  get:
+    handler: src/get.get
+    events:
+      - http:
+          path:   jes/email/{id}
+          method: get
+          cors:   yes
+
+  delete:
+    handler: src/delete.delete
+    events:
+      - http:
+          path:   jes/email/{id}
+          method: delete
+          cors:   yes
+
+  update:
+    handler: src/update.update
+    events:
+      - http:
+          path:   jes/email/{id}
+          method: put
+          cors:   yes
+
+resources:
+  Resources:
+    jobEmailTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits:  1
+          WriteCapacityUnits: 1
+        TableName: "${self:provider.environment.DYNAMODB_TABLE}"
