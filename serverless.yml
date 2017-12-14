@@ -18,6 +18,7 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
   environment:
     DYNAMODB_TABLE: "jobEmailSpam-${env:ENV}-${opt:stage}"
+    ALLOW_CIDR: "${env:ALLOW_CIDR, 'x.x.x.x'}"
 
 package:
   include:
