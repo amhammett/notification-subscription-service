@@ -1,28 +1,30 @@
 'use strict';
 
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+const AWS = require('aws-sdk');
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const allowCidr = process.env.ALLOW_CIDR || 'x.x.x.x'
+const allow_cidr = process.env.ALLOW_CIDR || 'x.x.x.x'
+const dynamo_db = new AWS.DynamoDB.DocumentClient()
+const table_name = process.env.DYNAMODB_TABLE
 
 module.exports.update = (event, context, callback) => {
   var found = false;
+  var sourceIP = event['requestContext']
+    && event['requestContext']['identity']['sourceIp'] || 'local'
 
-  allowCidr.split(' ').forEach(function(allow_mask) {
-    if(event['requestContext']['identity']['sourceIp'].includes(allow_mask)) {
+  allow_cidr.split(' ').forEach(function(allow_mask) {
+    if(sourceIP.includes(allow_mask)) {
       found = true
     }
   });
 
-  if(!found) {
+  if (!found && sourceIP !== 'local') {
     console.error('Requestor not in allow list')
 
     callback(null, {
       statusCode: 403,
       headers: { 'Content-Type': 'text/plain' },
-      body: '¯\\_(ツ)_/¯',
+      body: '¯\\_(ツ)_/¯'+sourceIP,
     });
-
     return;
   }
 
@@ -40,23 +42,24 @@ module.exports.update = (event, context, callback) => {
   }
 
   const params = {
-    TableName: process.env.DYNAMODB_TABLE,
+    TableName: table_name,
     Key: {
       id: event.pathParameters.id,
     },
     ExpressionAttributeNames: {
-      '#record_pattern': 'pattern',
+      '#p': 'pattern',
     },
     ExpressionAttributeValues: {
       ':pattern': data.pattern,
       ':email': data.email,
       ':updatedAt': timestamp,
     },
-    UpdateExpression: 'SET #record_pattern = :pattern, email = :email, updatedAt = :updatedAt',
+    UpdateExpression:
+      'SET #p = :pattern, email = :email, updatedAt = :updatedAt',
     ReturnValues: 'ALL_NEW',
   };
 
-  dynamoDb.update(params, (error, result) => {
+  dynamo_db.update(params, (error, result) => {
     if (error) {
       console.error(error);
       callback(null, {

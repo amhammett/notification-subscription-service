@@ -3,6 +3,7 @@ service: "jes-${env:ENV}"
 provider:
   name:       aws
   runtime:    nodejs6.10
+  region:     ${env:AWS_DEFAULT_REGION, 'us-west-2'}
   stage:      ${opt:stage}
   memorySize: 128
   timeout:    2
