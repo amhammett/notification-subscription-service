@@ -2,6 +2,13 @@
 
 const AWS = require('aws-sdk');
 
+const aws_default_region = process.env.AWS_DEFAULT_REGION
+if (!AWS.config.region && aws_default_region) {
+  AWS.config.update({
+    region: aws_default_region
+  });
+}
+
 const allow_cidr = process.env.ALLOW_CIDR || 'x.x.x.x'
 const dynamo_db = new AWS.DynamoDB.DocumentClient()
 const table_name = process.env.DYNAMODB_TABLE
@@ -27,7 +34,6 @@ module.exports.list = (event, context, callback) => {
     });
     return;
   }
-
 
   const params = {
     TableName: table_name

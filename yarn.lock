@@ -137,6 +137,10 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
+aws-lambda-local@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/aws-lambda-local/-/aws-lambda-local-1.0.15.tgz#810c6e276dd62d3b76182353582ee82634c0a3ed"
+
 aws-sdk@^2.169.0:
   version "2.169.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.169.0.tgz#c2d72737a30afb9a64f7ceb88ff1d5367f8eeb69"
@@ -185,7 +189,7 @@ bl@^1.0.0:
   dependencies:
     readable-stream "^2.0.5"
 
-bluebird@^3.5.0, bluebird@^3.5.1:
+bluebird@^3.5.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
