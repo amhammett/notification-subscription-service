@@ -1,4 +1,4 @@
-service: "jes-${env:ENV}"
+service: "jss-${env:ENV}"
 
 provider:
   name:       aws
@@ -7,6 +7,7 @@ provider:
   stage:      ${opt:stage}
   memorySize: 128
   timeout:    2
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -17,9 +18,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
   environment:
-    DYNAMODB_TABLE: "jobEmailSpam-${env:ENV}-${opt:stage}"
-    ALLOW_CIDR: "${env:ALLOW_CIDR, 'x.x.x.x'}"
+    DYNAMODB_TABLE: "jss-${env:ENV}-subscription"
+    ALLOW_CIDR:     "${env:ALLOW_CIDR, 'x.x.x.x'}"
 
 package:
   include:
@@ -33,7 +35,7 @@ functions:
     handler: src/create.create
     events:
       - http:
-          path:   jes/email
+          path:   jss/email
           method: post
           cors:   yes
 
@@ -41,7 +43,7 @@ functions:
     handler: src/list.list
     events:
       - http:
-          path:   jes/email
+          path:   jss/email
           method: get
           cors:   yes
 
@@ -49,7 +51,7 @@ functions:
     handler: src/get.get
     events:
       - http:
-          path:   jes/email/{id}
+          path:   jss/email/{id}
           method: get
           cors:   yes
 
@@ -57,7 +59,7 @@ functions:
     handler: src/delete.delete
     events:
       - http:
-          path:   jes/email/{id}
+          path:   jss/email/{id}
           method: delete
           cors:   yes
 
@@ -65,7 +67,7 @@ functions:
     handler: src/update.update
     events:
       - http:
-          path:   jes/email/{id}
+          path:   jss/email/{id}
           method: put
           cors:   yes
 
