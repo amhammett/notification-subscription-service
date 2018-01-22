@@ -1,16 +1,10 @@
-job-email-service
-=================
+notification-subscription-service
+=================================
 
-Provide service to determine which jobs (pattern) should receive emails.
+Provide service for users to subscribe to notifications. Current usecase: jenkins jobs.
 
 
 implementation
 --------------
 
 Written in NodeJS (es6), managed by Serverless and deployed on AWS Lambda/DynamoDB.
-
-
-limitations
------------
-
-Currently no server-side validation which means duplications are allowed.

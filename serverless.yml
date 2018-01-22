@@ -1,4 +1,4 @@
-service: "jss-${env:ENV}"
+service: "nss-${env:ENV}"
 
 provider:
   name:               aws
@@ -21,7 +21,7 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
   environment:
-    DYNAMODB_TABLE: "jss-${env:ENV}-subscription"
+    DYNAMODB_TABLE: "nss-${env:ENV}-subscription"
     ALLOW_CIDR:     "${env:ALLOW_CIDR, 'x.x.x.x'}"
 
 package:
@@ -36,7 +36,7 @@ functions:
     handler: src/create.create
     events:
       - http:
-          path:   jss/email
+          path:   nss/email
           method: post
           cors:   yes
 
@@ -44,7 +44,7 @@ functions:
     handler: src/list.list
     events:
       - http:
-          path:   jss/email
+          path:   nss/email
           method: get
           cors:   yes
 
@@ -52,7 +52,7 @@ functions:
     handler: src/get.get
     events:
       - http:
-          path:   jss/email/{id}
+          path:   nss/email/{id}
           method: get
           cors:   yes
 
@@ -60,7 +60,7 @@ functions:
     handler: src/delete.delete
     events:
       - http:
-          path:   jss/email/{id}
+          path:   nss/email/{id}
           method: delete
           cors:   yes
 
@@ -68,7 +68,7 @@ functions:
     handler: src/update.update
     events:
       - http:
-          path:   jss/email/{id}
+          path:   nss/email/{id}
           method: put
           cors:   yes
 
